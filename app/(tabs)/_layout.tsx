@@ -1,6 +1,6 @@
-import { Tabs, Redirect } from "expo-router";
+import { Tabs } from "expo-router";
 import React from "react";
-import { Image, ImageSourcePropType, Platform, Text, View } from "react-native";
+import { Image, ImageSourcePropType, Text, View } from "react-native";
 import { icons } from "../../constants";
 
 interface TabIconProps {
@@ -34,6 +34,7 @@ const TabIcon = ({ icon, color, focused, name }: TabIconProps) => {
 
 export default function TabLayout() {
   return (
+
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: "#ffa001",
