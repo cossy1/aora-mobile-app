@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import React from "react";
 
 interface Props {
@@ -6,7 +6,7 @@ interface Props {
     handlePress: () => void;
     containerStyles?: string;
     isLoading?: boolean;
-    textStyles?: string
+    textStyles?: string;
 }
 
 const AppButton = ({
@@ -14,7 +14,7 @@ const AppButton = ({
     containerStyles,
     isLoading,
     handlePress,
-    textStyles
+    textStyles,
 }: Props) => {
     return (
         <TouchableOpacity
@@ -24,7 +24,13 @@ const AppButton = ({
             onPress={handlePress}
             disabled={isLoading}
         >
-            <Text className={`text-primary font-psemibold text-lg ${textStyles}`}>{title}</Text>
+            {isLoading ? (
+                <ActivityIndicator />
+            ) : (
+                <Text className={`text-primary font-psemibold text-lg ${textStyles}`}>
+                    {title}
+                </Text>
+            )}
         </TouchableOpacity>
     );
 };

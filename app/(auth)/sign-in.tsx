@@ -1,10 +1,12 @@
-import { View, Text, ScrollView, Image } from "react-native";
+import { View, Text, ScrollView, Image, Alert } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../../constants";
 import FormField from "@/components/form-field";
 import AppButton from "@/components/app-button";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
+import { getCurrentUser, signInUser } from "@/lib/appwrite";
+import { useGlobalContext } from "@/context/global-provider";
 
 const SignIn = () => {
   const [form, setForm] = useState({
@@ -12,7 +14,34 @@ const SignIn = () => {
     password: "",
   });
 
-  const submit = () => { }
+  const { setUser, setIsLoggedIn } = useGlobalContext();
+
+  const [loading, setLoading] = useState(false);
+
+  const submit = async () => {
+    if (!form.email || !form.password) {
+      Alert.alert("Error", "Please fill all fields");
+    } else {
+      setLoading(true);
+
+      try {
+        await signInUser(form.email, form.password);
+        const result = await getCurrentUser();
+
+        console.log("result::::", result);
+        setUser(result);
+        setIsLoggedIn(true);
+
+        Alert.alert('success', 'User logged in successfully')
+        router.replace("/(tabs)");
+      } catch (error: any) {
+        Alert.alert("Error", error.message);
+        throw new Error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
   return (
     <SafeAreaView className="bg-primary h-full">
@@ -34,8 +63,7 @@ const SignIn = () => {
             value={form.email}
             otherStyles="mt-7"
             title="Email"
-            keyboardType='email-address'
-
+            keyboardType="email-address"
           />
 
           <FormField
@@ -51,6 +79,7 @@ const SignIn = () => {
             title="Sign In"
             handlePress={submit}
             containerStyles="w-full mt-8"
+            isLoading={loading}
           />
 
           <View className="gap-2 justify-center items-center pt-5 flex-row">
@@ -65,8 +94,6 @@ const SignIn = () => {
             </Link>
           </View>
         </View>
-
-
       </ScrollView>
     </SafeAreaView>
   );

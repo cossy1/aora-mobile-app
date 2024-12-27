@@ -1,10 +1,12 @@
-import { View, Text, ScrollView, Image } from "react-native";
+import { View, Text, ScrollView, Image, Alert } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../../constants";
 import FormField from "@/components/form-field";
 import AppButton from "@/components/app-button";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
+import { createUser } from "@/lib/appwrite";
+import { useGlobalContext } from "@/context/global-provider";
 
 const SignUp = () => {
   const [form, setForm] = useState({
@@ -13,7 +15,33 @@ const SignUp = () => {
     username: "",
   });
 
-  const submit = () => {};
+  const [loading, setLoading] = useState(false);
+
+  const { setUser, setIsLoggedIn } = useGlobalContext()
+
+  const submit = async () => {
+    if (!form.email || !form.password || !form.username) {
+      Alert.alert('Error', 'Please fill all fields')
+    }
+
+    else {
+      setLoading(true);
+
+      try {
+        const result = await createUser(form.email, form.password, form.username);
+        setUser(result);
+        setIsLoggedIn(true);
+
+        router.replace('/(tabs)')
+      } catch (error: any) {
+        throw new Error(error);
+      }
+      finally {
+        setLoading(false);
+      }
+    }
+
+  };
 
   return (
     <SafeAreaView className="bg-primary h-full">
@@ -42,7 +70,7 @@ const SignUp = () => {
             handleChangeText={(value) =>
               setForm((prev) => ({ ...prev, username: value }))
             }
-            value={form.email}
+            value={form.username}
             otherStyles="mt-7"
             title="Username"
           />
@@ -60,6 +88,7 @@ const SignUp = () => {
             title="Sign Up"
             handlePress={submit}
             containerStyles="w-full mt-8"
+            isLoading={loading}
           />
 
           <View className="gap-2 justify-center items-center pt-5 flex-row">
