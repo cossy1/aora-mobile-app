@@ -19,7 +19,7 @@ const AppButton = ({
     return (
         <TouchableOpacity
             activeOpacity={0.7}
-            className={`bg-secondary min-h-14 rounded-lg flex justify-center items-center ${containerStyles} ${isLoading ? "opacity-50" : ""
+            className={`bg-secondary min-h-14 rounded-xl flex justify-center items-center ${containerStyles} ${isLoading ? "opacity-50" : ""
                 }`}
             onPress={handlePress}
             disabled={isLoading}
