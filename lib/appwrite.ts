@@ -94,3 +94,44 @@ export const getCurrentUser = async () => {
     throw new Error(error);
   }
 };
+
+export const getAllPosts = async () => {
+  try {
+    const result = await databases.listDocuments(
+      config.databaseId,
+      config.videoCollectionId
+    );
+
+    return result;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const getLatestPosts = async () => {
+  try {
+    const result = await databases.listDocuments(
+      config.databaseId,
+      config.videoCollectionId,
+      [Query.orderDesc("$createdAt"), Query.limit(7)]
+    );
+
+    return result;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const searchPosts = async (query: string) => {
+  try {
+    const result = await databases.listDocuments(
+      config.databaseId,
+      config.videoCollectionId,
+      [Query.search("title", query)]
+    );
+
+    return result;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
